@@ -14,7 +14,6 @@ function SVGPreview(props: {
   const { copyToClipboard, downloadAsSvg, svgs, index } = props;
 
   React.useEffect(() => {
-    console.log(SVGPreviewRef.current);
     if (SVGPreviewRef.current) {
       SVGPreviewRef.current.innerHTML = svgs[index];
     }

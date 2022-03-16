@@ -94,7 +94,6 @@ export default function Main() {
         // units: string;
       }
     ) => {
-      console.log("this is ran!");
       const textModel = new MakerJs.models.Text(
         arg.font,
         arg.text,
@@ -184,11 +183,13 @@ export default function Main() {
       temp[index] = font;
 
       setUploadFonts(temp);
+      setCurrentFormIndex(index);
     }
   };
 
   const removeUploadFont = (index: number) => {
     setUploadFonts((prevState) => prevState.filter((_, i) => i !== index));
+    setCurrentFormIndex(index);
   };
 
   // generate svg
@@ -215,6 +216,8 @@ export default function Main() {
       dispatch(appActions.setGoogleFontOptions(googleFontOptions));
     })();
   }, []);
+
+  console.log(currentFormIndex);
 
   return (
     <Box>
