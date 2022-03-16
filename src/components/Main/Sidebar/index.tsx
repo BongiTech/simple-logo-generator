@@ -11,6 +11,43 @@ import { Input, Select, Checkbox } from "../../";
 import type { IOptions } from "../../../interfaces";
 import { IGoogleFontOptions } from "../../../interfaces/app.interface";
 
+function UploadedFontInput(props: {
+  onUploadFont: (index: number, e: React.ChangeEvent<HTMLInputElement>) => void;
+  removeUploadFont: (index: number) => void;
+  index: number;
+}) {
+  const inputRef = React.useRef<any>(null);
+  const { removeUploadFont, onUploadFont, index } = props;
+
+  return (
+    <HStack align="start">
+      <Input
+        ref={inputRef}
+        name="uploadedFont"
+        onChange={(e) => onUploadFont(index, e)}
+        id="uploaded-font"
+        label="Upload Font (optional)"
+        type="file"
+        size="md"
+        border="none"
+      />
+      <Button
+        variant="primary-outline"
+        size="sm"
+        rounded="md"
+        onClick={() => {
+          if (inputRef.current) {
+            inputRef.current.value = "";
+          }
+          removeUploadFont(index);
+        }}
+      >
+        Remove
+      </Button>
+    </HStack>
+  );
+}
+
 export default function Sidebar(props: {
   onSetOptions: (index: number, data: any) => void;
   googleFontOptions: IGoogleFontOptions[];
@@ -22,8 +59,17 @@ export default function Sidebar(props: {
     }[];
   }[];
   onAddMoreIcon: () => void;
+  onUploadFont: (index: number, e: React.ChangeEvent<HTMLInputElement>) => void;
+  removeUploadFont: (index: number) => void;
 }) {
-  const { onSetOptions, googleFontOptions, icons, onAddMoreIcon } = props;
+  const {
+    onSetOptions,
+    googleFontOptions,
+    icons,
+    onAddMoreIcon,
+    onUploadFont,
+    removeUploadFont,
+  } = props;
 
   const onChange = (index: number, e: any) => {
     const { name, value } = e.target;
@@ -89,14 +135,10 @@ export default function Sidebar(props: {
               bg="white"
             />
 
-            <Input
-              name="uploadedFont"
-              onChange={(e) => onChange(i, e)}
-              id="uploaded-font"
-              label="Upload Font (optional)"
-              type="file"
-              size="md"
-              border="none"
+            <UploadedFontInput
+              onUploadFont={onUploadFont}
+              removeUploadFont={removeUploadFont}
+              index={i}
             />
 
             <HStack w="full">

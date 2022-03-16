@@ -16,7 +16,7 @@ const appSlice = createSlice({
             regular:
               "http://fonts.gstatic.com/s/abeezee/v20/esDR31xSG-6AGleN6tKukbcHCpE.ttf",
           },
-          text: "",
+          text: "verb",
           union: false,
           uploadedFont: null,
           variant: "regular",
@@ -55,7 +55,7 @@ const appSlice = createSlice({
             regular:
               "http://fonts.gstatic.com/s/abeezee/v20/esDR31xSG-6AGleN6tKukbcHCpE.ttf",
           },
-          text: "",
+          text: "verb",
           union: false,
           uploadedFont: null,
           variant: "regular",

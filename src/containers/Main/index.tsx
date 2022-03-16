@@ -1,7 +1,7 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import MakerJs from "makerjs";
-import { load } from "opentype.js";
+import { load, parse } from "opentype.js";
 import { Box, useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { Main as CMain } from "../../components";
@@ -16,6 +16,7 @@ export default function Main() {
   );
   const [currentFormIndex, setCurrentFormIndex] = React.useState(0);
   const [svgs, setSvgs] = React.useState<string[]>([]);
+  const [uploadFonts, setUploadFonts] = React.useState<opentype.Font[]>([]);
 
   const onAddMoreIcon = () => {
     dispatch(appActions.addSvgIcon(null));
@@ -93,6 +94,7 @@ export default function Main() {
         // units: string;
       }
     ) => {
+      console.log("this is ran!");
       const textModel = new MakerJs.models.Text(
         arg.font,
         arg.text,
@@ -114,12 +116,6 @@ export default function Main() {
       });
 
       if (svg) {
-        const div = document.getElementById(`svg-preview-${index}`);
-
-        if (div) {
-          div.innerHTML = svg;
-        }
-
         setSvgs((prevState) => {
           const temp = [...prevState];
 
@@ -129,10 +125,8 @@ export default function Main() {
         });
       }
     },
-    [icons, svgs]
+    []
   );
-
-  console.log(svgs);
 
   const generateSvg = React.useCallback(
     (index: number = 0) => {
@@ -142,32 +136,65 @@ export default function Main() {
             5
           ); // remove http:
 
-        load(url, (err, font) => {
-          if (err) {
-            console.log(err);
-          }
+        if (uploadFonts[index]) {
+          callMakerjs(index, {
+            font: uploadFonts[index],
+            text: icons[index].options.text,
+            fontSize: +icons[index].options.size,
+            filled: icons[index].options.filled,
+            kerning: icons[index].options.kerning,
+            separate: icons[index].options.seperateCharactors,
+            union: icons[index].options.union,
+          });
+        } else {
+          load(url, (err, font) => {
+            if (err) {
+              console.log(err);
+            }
 
-          if (font && !err) {
-            callMakerjs(index, {
-              font,
-              text: icons[index].options.text,
-              fontSize: +icons[index].options.size,
-              filled: icons[index].options.filled,
-              kerning: icons[index].options.kerning,
-              separate: icons[index].options.seperateCharactors,
-              union: icons[index].options.union,
-            });
-          }
-        });
+            if (font && !err) {
+              callMakerjs(index, {
+                font,
+                text: icons[index].options.text,
+                fontSize: +icons[index].options.size,
+                filled: icons[index].options.filled,
+                kerning: icons[index].options.kerning,
+                separate: icons[index].options.seperateCharactors,
+                union: icons[index].options.union,
+              });
+            }
+          });
+        }
       }
     },
-    [icons]
+    [icons, uploadFonts, callMakerjs]
   );
+
+  const onUploadFont = async (
+    index: number,
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { files } = e.target;
+    if (files) {
+      const temp = [...uploadFonts];
+
+      const file = await files[0].arrayBuffer();
+      const font = parse(file);
+
+      temp[index] = font;
+
+      setUploadFonts(temp);
+    }
+  };
+
+  const removeUploadFont = (index: number) => {
+    setUploadFonts((prevState) => prevState.filter((_, i) => i !== index));
+  };
 
   // generate svg
   React.useEffect(() => {
     generateSvg(currentFormIndex);
-  }, [currentFormIndex, generateSvg]);
+  }, [currentFormIndex, uploadFonts, icons, generateSvg]);
 
   React.useEffect(() => {
     // fetch google fonts
@@ -194,11 +221,13 @@ export default function Main() {
       <CMain
         svgs={svgs}
         onSetOptions={onSetOptions}
+        onUploadFont={onUploadFont}
+        removeUploadFont={removeUploadFont}
         icons={icons}
-        googleFontOptions={googleFontOptions}
         copyToClipboard={copyToClipboard}
         downloadAsSvg={downloadAsSvg}
         onAddMoreIcon={onAddMoreIcon}
+        googleFontOptions={googleFontOptions}
       />
     </Box>
   );

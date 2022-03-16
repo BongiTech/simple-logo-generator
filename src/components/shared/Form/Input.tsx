@@ -32,9 +32,10 @@ const CInput = React.forwardRef(
     }: CInputProps,
     ref: React.ForwardedRef<any>
   ) => (
-    <FormControl ref={ref} isInvalid={!!error} isRequired={isRequired}>
+    <FormControl isInvalid={!!error} isRequired={isRequired}>
       <FormLabel color="brand.gray.dark">{label}</FormLabel>
       <Input
+        ref={ref}
         name={name}
         data-testid={id}
         w="full"

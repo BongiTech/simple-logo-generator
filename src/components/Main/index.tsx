@@ -4,6 +4,54 @@ import Sidebar from "./Sidebar";
 import { IOptions } from "../../interfaces";
 import { IGoogleFontOptions } from "../../interfaces/app.interface";
 
+function SVGPreview(props: {
+  svgs: string[];
+  copyToClipboard: (svg: string) => void;
+  downloadAsSvg: (svg: string) => void;
+  index: number;
+}) {
+  const SVGPreviewRef = React.useRef<any>(null);
+  const { copyToClipboard, downloadAsSvg, svgs, index } = props;
+
+  React.useEffect(() => {
+    console.log(SVGPreviewRef.current);
+    if (SVGPreviewRef.current) {
+      SVGPreviewRef.current.innerHTML = svgs[index];
+    }
+  }, [svgs]);
+
+  return (
+    <VStack mb="16" align="start">
+      <Heading ref={SVGPreviewRef} id={`svg-preview-${index}`} my="4">
+        {null}
+      </Heading>
+      <Input
+        size="sm"
+        rounded="none"
+        bg="gray.50"
+        value={svgs[index]}
+        pointerEvents="none"
+      />
+      <HStack>
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={() => copyToClipboard(svgs[index])}
+        >
+          Copy To Clipboard
+        </Button>
+        <Button
+          variant="primary"
+          size="sm"
+          onClick={() => downloadAsSvg(svgs[index])}
+        >
+          Download as SVG
+        </Button>
+      </HStack>
+    </VStack>
+  );
+}
+
 export default function Main(props: {
   svgs: string[];
   onSetOptions: (
@@ -21,6 +69,8 @@ export default function Main(props: {
   copyToClipboard: (svg: string) => void;
   downloadAsSvg: (svg: string) => void;
   onAddMoreIcon: () => void;
+  onUploadFont: (index: number, e: React.ChangeEvent<HTMLInputElement>) => void;
+  removeUploadFont: (index: number) => void;
 }) {
   const {
     onSetOptions,
@@ -30,12 +80,16 @@ export default function Main(props: {
     icons,
     onAddMoreIcon,
     svgs,
+    onUploadFont,
+    removeUploadFont,
   } = props;
 
   return (
     <HStack w="full" pos="relative">
       <Box w="25%">
         <Sidebar
+          onUploadFont={onUploadFont}
+          removeUploadFont={removeUploadFont}
           onSetOptions={onSetOptions}
           icons={icons}
           googleFontOptions={googleFontOptions}
@@ -44,36 +98,13 @@ export default function Main(props: {
       </Box>
       <Box w="75%" h="100vh" p="5" overflow="auto">
         {icons.map((icon, i) => {
-          console.log(`svg-preview-${i}`);
           return svgs[i] ? (
-            <VStack mb="16" align="start">
-              <Heading id={`svg-preview-${i}`} my="4">
-                {null}
-              </Heading>
-              <Input
-                size="sm"
-                rounded="none"
-                bg="gray.50"
-                value={svgs[i]}
-                pointerEvents="none"
-              />
-              <HStack>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => copyToClipboard(svgs[i])}
-                >
-                  Copy To Clipboard
-                </Button>
-                <Button
-                  variant="primary"
-                  size="sm"
-                  onClick={() => downloadAsSvg(svgs[i])}
-                >
-                  Download as SVG
-                </Button>
-              </HStack>
-            </VStack>
+            <SVGPreview
+              copyToClipboard={copyToClipboard}
+              downloadAsSvg={downloadAsSvg}
+              index={i}
+              svgs={svgs}
+            />
           ) : null;
         })}
       </Box>
