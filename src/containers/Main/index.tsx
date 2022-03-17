@@ -113,17 +113,11 @@ export default function Main() {
         }
       }
 
-      console.log(textModel.models);
-
       const svg = MakerJs.exporter.toSVG(textModel, {
         fill: arg.filled ? arg.color : undefined,
         stroke: arg.stroke,
         strokeWidth: arg.strokeWidth,
       });
-
-      // const svgPath = MakerJs.exporter.toSVGPathData(textModel);
-
-      // console.log(svgPath);
 
       if (svg) {
         setSvgs((prevState) => {
