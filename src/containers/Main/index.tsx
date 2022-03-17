@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import MakerJs from "makerjs";
+import MakerJs, { models } from "makerjs";
 import { load, parse } from "opentype.js";
 import { Box, useToast } from "@chakra-ui/react";
 import axios from "axios";
@@ -90,6 +90,9 @@ export default function Main() {
         union: boolean;
         kerning: boolean;
         separate: boolean;
+        color: string;
+        stroke: string;
+        strokeWidth: string;
         // bezierAccuracy: number;
         // units: string;
       }
@@ -110,9 +113,17 @@ export default function Main() {
         }
       }
 
+      console.log(textModel.models);
+
       const svg = MakerJs.exporter.toSVG(textModel, {
-        fill: arg.filled ? "black" : undefined,
+        fill: arg.filled ? arg.color : undefined,
+        stroke: arg.stroke,
+        strokeWidth: arg.strokeWidth,
       });
+
+      // const svgPath = MakerJs.exporter.toSVGPathData(textModel);
+
+      // console.log(svgPath);
 
       if (svg) {
         setSvgs((prevState) => {
@@ -144,6 +155,9 @@ export default function Main() {
             kerning: icons[index].options.kerning,
             separate: icons[index].options.seperateCharactors,
             union: icons[index].options.union,
+            color: icons[index].options.color,
+            stroke: icons[index].options.stroke,
+            strokeWidth: icons[index].options.strokeWidth,
           });
         } else {
           load(url, (err, font) => {
@@ -160,6 +174,9 @@ export default function Main() {
                 kerning: icons[index].options.kerning,
                 separate: icons[index].options.seperateCharactors,
                 union: icons[index].options.union,
+                color: icons[index].options.color,
+                stroke: icons[index].options.stroke,
+                strokeWidth: icons[index].options.strokeWidth,
               });
             }
           });

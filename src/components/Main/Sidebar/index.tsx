@@ -124,16 +124,53 @@ export default function Sidebar(props: {
               options={icon.fontVariants}
               placeholder="Select Variant"
             />
+            <HStack w="full" align="center">
+              <Input
+                type="number"
+                name="size"
+                value={icon.options.size}
+                onChange={(e) => onChange(i, e)}
+                id="size"
+                label="Size"
+                bg="white"
+              />
 
-            <Input
-              type="number"
-              name="size"
-              value={icon.options.size}
-              onChange={(e) => onChange(i, e)}
-              id="size"
-              label="Size"
-              bg="white"
-            />
+              <Input
+                type="color"
+                name="color"
+                value={icon.options.color}
+                onChange={(e) => {
+                  onChange(i, e);
+                }}
+                id="color"
+                label="Color"
+                bg="white"
+              />
+            </HStack>
+
+            <HStack w="full" align="center">
+              <Input
+                type="color"
+                name="stroke"
+                value={icon.options.stroke}
+                onChange={(e) => onChange(i, e)}
+                id="stroke"
+                label="Stroke"
+                bg="white"
+              />
+
+              <Input
+                type="number"
+                name="strokeWidth"
+                value={icon.options.strokeWidth}
+                onChange={(e) => {
+                  onChange(i, e);
+                }}
+                id="strokeWidth"
+                label="Stroke Width"
+                bg="white"
+              />
+            </HStack>
 
             <UploadedFontInput
               onUploadFont={onUploadFont}

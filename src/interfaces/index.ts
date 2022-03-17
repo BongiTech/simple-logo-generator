@@ -13,4 +13,7 @@ export interface IOptions {
   uploadedFont: File | null;
   variant: string;
   svg: string;
+  color: string;
+  stroke: string;
+  strokeWidth: string;
 }

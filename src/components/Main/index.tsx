@@ -1,5 +1,12 @@
 import React from "react";
-import { Box, HStack, Heading, Input, VStack, Button } from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  Heading,
+  Textarea,
+  VStack,
+  Button,
+} from "@chakra-ui/react";
 import Sidebar from "./Sidebar";
 import { IOptions } from "../../interfaces";
 import { IGoogleFontOptions } from "../../interfaces/app.interface";
@@ -24,13 +31,7 @@ function SVGPreview(props: {
       <Heading ref={SVGPreviewRef} id={`svg-preview-${index}`} my="4">
         {null}
       </Heading>
-      <Input
-        size="sm"
-        rounded="none"
-        bg="gray.50"
-        value={svgs[index]}
-        pointerEvents="none"
-      />
+      <Textarea rounded="none" bg="gray.50" value={svgs[index]} readOnly />
       <HStack>
         <Button
           variant="primary"
